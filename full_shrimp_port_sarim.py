@@ -23,8 +23,8 @@ def go(api):
         return 650
 
     api.log("# Cooked shrimp = %s, # Raw shrimp = %s" % (api.get_inventory_count_by_id(COOKED_SHRIMP_ID), api.get_inventory_count_by_id(RAW_SHRIMP_ID)))
-    
-    if len(api.get_inventory_items()) < 25: 
+
+    if len(api.get_inventory_items()) < 25:
         return go_fish(api)
     elif api.has_inventory_item(RAW_SHRIMP_ID) and api.get_nearest_object_by_id(FIRE_ID):
         return cook_shrimp(api)
@@ -34,7 +34,7 @@ def go(api):
         return drop_logs(api)
     else:
         return chop_logs(api)
-    
+
     return 700
 
 def drop_unneeded_items(api):
@@ -55,7 +55,7 @@ def go_fish(api):
     if fish_spot_obj == None:
         api.log("Could not find fishing spot")
         return 1000
-    
+
     api.at_object(fish_spot_obj)
 
     return 2000
@@ -65,7 +65,7 @@ def cook_shrimp(api):
     if fire_obj == None:
         api.log("Could not find fire")
         return 1000
-    
+
     api.log("Gonna use " + str(api.get_inventory_item_by_id(RAW_SHRIMP_ID)) + " on " + str(fire_obj))
     api.use_item_on_object(api.get_inventory_item_by_id(RAW_SHRIMP_ID), fire_obj)
 
@@ -76,7 +76,7 @@ def burn_logs(api):
     if logs == None:
         api.log("Could not find logs")
         return 1000
-    
+
     api.use_item_on_ground_item(api.get_inventory_item_by_id(TINDERBOX_ID), logs)
 
     return 2000
@@ -94,7 +94,7 @@ def chop_logs(api):
     if tree == None:
         api.log("Could not find tree")
         return 1000
-    
+
     api.at_object(tree)
 
     return 2000

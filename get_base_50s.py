@@ -38,6 +38,7 @@ setattr(api, "walk_to_point", walk_to_point)
 print(api)
 print()
 
+import skip_tutorial
 import get_acc_builder_equip
 import full_shrimp_port_sarim
 
@@ -46,7 +47,7 @@ def loop():
       api.log("GET_X IS 0 in get_base")
       api.logout()
       return 6 * 60 * 1000
-    
+
     api.set_autologin(True)
 
 
@@ -55,9 +56,14 @@ def loop():
         api.use_sleeping_bag()
         return 5000
 
+    if not skip_tutorial.done(api):
+      api.log("Tutorial")
+      return skip_tutorial.go(api)
     if not get_acc_builder_equip.done(api):
+      api.log("Getting acc builder equip")
       return get_acc_builder_equip.go(api)
     if not full_shrimp_port_sarim.done(api):
+      api.log("Fishing shrimp")
       return full_shrimp_port_sarim.go(api)
     else:
         api.log("Done everything. I have " + len(api.get_inventory_items()) + " items in my inventory")

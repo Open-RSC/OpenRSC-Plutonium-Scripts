@@ -46,8 +46,8 @@ def go(api):
 
     coin_count = api.get_inventory_count_by_id(COINS)
     api.log("# Coins = %d. Has sleeping bag = %s. Has tinderbox = %s. Has bronze axe = %s. Has net = %s" % (coin_count, api.has_inventory_item(SLEEPING_BAG), api.has_inventory_item(TINDERBOX), api.has_inventory_item(BRONZE_AXE), api.has_inventory_item(FISHING_NET)))
-    
-    if coin_count >= 39 and not api.has_inventory_item(SLEEPING_BAG): 
+
+    if coin_count >= 39 and not api.has_inventory_item(SLEEPING_BAG):
         return buy_sleeping_bag(api)
     elif coin_count >= 1 and not api.has_inventory_item(TINDERBOX) and api.has_inventory_item(SLEEPING_BAG):
         return buy_tinderbox(api)
@@ -57,7 +57,7 @@ def go(api):
         return buy_fishing_net(api)
     else:
         return get_coins(api)
-    
+
     return 700
 
 def drop_unneeded_items(api):
@@ -96,7 +96,7 @@ def get_coins(api):
         if ground_item != None:
             api.pickup_item(ground_item)
             return 700
-    
+
     man = api.get_nearest_npc_by_id(MAN, in_combat=False, reachable=True, x=THEIV_PT[0], z=THEIV_PT[1], radius=8)
     if man != None:
         api.thieve_npc(man)
@@ -145,7 +145,7 @@ def buy_sleeping_bag(api):
                 return 3000
     else:
         api.buy_shop_item(SLEEPING_BAG, 1)
-    
+
     return 3000
 
 def buy_tinderbox(api):
@@ -256,7 +256,7 @@ def buy_fishing_net(api):
         return 1000
 
     return 650
-  
+
   if not api.is_shop_open():
     if api.is_option_menu():
       api.answer(0)
