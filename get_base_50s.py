@@ -18,7 +18,7 @@ def walk_to_point(point: "List[int]", debug_name: str = "(some path)") -> int:
       api.log("Calculating path to " + debug_name + "")
       walk_path = api.calculate_path_to(point[0], point[1])
       if walk_path == None:
-        api.log("failed to path with to_generalstore_path")
+        api.log("Failed to calculate path to " + debug_name + "")
         return 1000
 
     walk_path.process()
@@ -38,7 +38,7 @@ setattr(api, "walk_to_point", walk_to_point)
 print(api)
 print()
 
-import skip_tutorial
+import skip_tutorial_script
 import get_acc_builder_equip
 import full_shrimp_port_sarim
 
@@ -56,9 +56,9 @@ def loop():
         api.use_sleeping_bag()
         return 5000
 
-    if not skip_tutorial.done(api):
+    if not skip_tutorial_script.done(api):
       api.log("Tutorial")
-      return skip_tutorial.go(api)
+      return skip_tutorial_script.go(api)
     if not get_acc_builder_equip.done(api):
       api.log("Getting acc builder equip")
       return get_acc_builder_equip.go(api)

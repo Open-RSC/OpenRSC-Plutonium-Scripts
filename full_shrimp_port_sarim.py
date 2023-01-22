@@ -13,10 +13,13 @@ FISH_SPOT = (310, 686)
 FISH_OBJ_ID = 193
 FIRE_ID = 97
 
+unstuck = False
+
 def done(api):
     return len(api.get_inventory_items()) >= 25 and not api.has_inventory_item(BURNT_SHRIMP_ID) and not api.has_inventory_item(RAW_SHRIMP_ID) and not api.has_inventory_item(RAW_ANCHOVY_ID)
 
 def go(api):
+    global unstuck
     if api.in_combat():
         if not api.walk_to(api.get_x(), api.get_z()):
           api.log("Could not escape combat")
@@ -24,7 +27,9 @@ def go(api):
 
     api.log("# Cooked shrimp = %s, # Raw shrimp = %s" % (api.get_inventory_count_by_id(COOKED_SHRIMP_ID), api.get_inventory_count_by_id(RAW_SHRIMP_ID)))
 
-    if len(api.get_inventory_items()) < 25:
+    if unstuck:
+        return get_unstuck(api)
+    elif len(api.get_inventory_items()) < 25:
         return go_fish(api)
     elif api.has_inventory_item(RAW_SHRIMP_ID) and api.get_nearest_object_by_id(FIRE_ID):
         return cook_shrimp(api)
@@ -36,6 +41,12 @@ def go(api):
         return chop_logs(api)
 
     return 700
+
+def get_unstuck(api):
+    global unstuck
+    unstuck = False
+    log("Getting unstuck")
+    return api.walk_path_point((305, 880), "firemakable location")
 
 def drop_unneeded_items(api):
     for item in api.get_inventory_items():
@@ -99,3 +110,10 @@ def chop_logs(api):
 
     return 2000
 
+
+def on_server_message(msg):
+    global unstuck
+
+    if msg.startswith("You can't light"):
+        log("Need to get unstuck")
+        unstuck = True
