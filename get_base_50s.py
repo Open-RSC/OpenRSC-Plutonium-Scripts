@@ -1,10 +1,15 @@
 # Fishes and fights South of Port Sarim until level 50
 
 api = lambda: None
-for k in globals():
-  if k.startswith("__") or k == "api":
-    continue
-  setattr(api, k, globals()[k])
+def set_api():
+  """
+  Sets all the global variables into an api variable so it can be passed to other scripts
+  Avoid defining too many things in this file..
+  """
+  for k in globals():
+    if k.startswith("__") or k == "api":
+      continue
+    setattr(api, k, globals()[k])
 
 SLEEPING_BAG = 1263
 TINDERBOX    = 166
@@ -33,23 +38,15 @@ def walk_to_point(point: "List[int]", debug_name: str = "(some path)") -> int:
 
     return 650
 
-setattr(api, "walk_to_point", walk_to_point)
-
 print(api)
-print()
 
 import skip_tutorial_script
 import get_acc_builder_equip
 import full_shrimp_port_sarim
 
 def loop():
-    if api.get_x() == 0:
-      api.log("GET_X IS 0 in get_base")
-      api.logout()
-      return 6 * 60 * 1000
-
+    set_api() # Needs to be called on each loop because the globals are constantly injected/updated
     api.set_autologin(True)
-
 
     if api.get_fatigue() > 95 and api.has_inventory_item(SLEEPING_BAG):
         api.log("Sleeping zzz")
@@ -66,8 +63,7 @@ def loop():
       api.log("Fishing shrimp")
       return full_shrimp_port_sarim.go(api)
     else:
-        api.log("Done everything. I have " + len(api.get_inventory_items()) + " items in my inventory")
-        api.log()
+        api.log("Done everything. I have %s items in my inventory" % len(api.get_inventory_items()))
         api.stop_script()
         api.set_autologin(False)
         api.logout()
