@@ -32,11 +32,25 @@ def walk_to_point(point: "List[int]", debug_name: str = "(some path)") -> int:
       if not walk_path.walk():
         api.log("Failed to walk " + debug_name + "")
         walk_path = None
+      else:
+        api.log("Walked " + debug_name + " successfully")
       return 600
     else:
       walk_path = None
 
     return 650
+
+def get_adjacent_coord():
+    if is_reachable(get_x()+1, get_z()):
+        return (get_x()+1, get_z())
+    elif is_reachable(get_x(), get_z()+1):
+        return (get_x(), get_z()+1)
+    elif is_reachable(get_x()-1, get_z()):
+        return (get_x()-1, get_z())
+    elif is_reachable(get_x(), get_z()-1):
+        return (get_x(), get_z()-1)
+
+    return (None, None)
 
 print(api)
 
@@ -44,9 +58,25 @@ import skip_tutorial_script
 import get_acc_builder_equip
 import full_shrimp_port_sarim
 
+move_timer = False
+
 def loop():
     set_api() # Needs to be called on each loop because the globals are constantly injected/updated
     api.set_autologin(True)
+
+    global move_timer
+    if move_timer:
+      api.log("Moving otherwise we'll log out..")
+      move_timer = False
+      adj_x, adj_z = get_adjacent_coord()
+      if adj_x == None or adj_z == None:
+        api.log("FAILED TO MOVE!! RIP GOOD SOUL")
+        return 1000
+      if api.walk_to(adj_x, adj_z):
+        api.log("Moved to %s, %s" % (adj_x, adj_z))
+      else:
+        api.log("Failed to move to %s, %s" % (adj_x, adj_z))
+      return 1000
 
     if api.get_fatigue() > 95 and api.has_inventory_item(SLEEPING_BAG):
         api.log("Sleeping zzz")
@@ -69,3 +99,9 @@ def loop():
         api.logout()
         api.stop_account()
         return 10000
+
+def on_server_message(msg):
+    global move_timer
+
+    if msg.startswith("@cya@You have been standing"):
+        move_timer = True
