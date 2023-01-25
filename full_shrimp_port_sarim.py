@@ -33,13 +33,17 @@ def go(api):
         return go_fish(api)
     elif api.has_inventory_item(RAW_SHRIMP_ID) and api.get_nearest_object_by_id(FIRE_ID):
         return cook_shrimp(api)
-    elif api.get_nearest_ground_item_by_id(LOGS_ID):
+    elif api.has_inventory_item(RAW_SHRIMP_ID) and api.get_nearest_ground_item_by_id(LOGS_ID):
         return burn_logs(api)
     elif api.has_inventory_item(LOGS_ID):
         return drop_logs(api)
-    else:
+    elif api.has_inventory_item(RAW_SHRIMP_ID):
         return chop_logs(api)
+    elif api.has_inventory_item(BURNT_SHRIMP_ID):
+        drop_unneeded_items(api)
+        return 1000
 
+    api.log("Nothing to do")
     return 700
 
 def get_unstuck(api):
@@ -94,8 +98,7 @@ def burn_logs(api):
 
 def drop_logs(api):
     api.drop_item(api.get_inventory_item_by_id(LOGS_ID))
-
-    return 2000
+    return api.walk_adjacent()
 
 def chop_logs(api):
     if drop_unneeded_items(api):
